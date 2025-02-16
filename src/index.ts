@@ -5,7 +5,7 @@ const scrapeText = (api: CheerioAPI) => (selector: string) =>
   api(selector).map((_, element) => api(element).text()).toArray()
 
 export class ThaiLotto {
-  public async getResult (date: Date): Promise<ThaiLottoResult> {
+  public async getResult (date: Date): Promise<ThaiLottoResult|undefined> {
     const day = String(date.getDate()).padStart(2, '0')
     const month = String(date.getMonth() + 1).padStart(2, '0')
     const year = String(date.getFullYear() + 543)
@@ -55,6 +55,9 @@ export class ThaiLotto {
       )
     ])
 
+    // no result yet
+    if (prizeFirst[0] === 'xxxxxx') return
+
     return {
       date,
       endpoint: url,
@@ -97,5 +100,45 @@ export class ThaiLotto {
         }
       }
     }
+  }
+
+  public async getLatest(): Promise<ThaiLottoResult | undefined> {
+    const list = await this.getList()
+    const firstList = list[0]
+    const res1 = await this.getResult(firstList.date)
+    if (res1) return res1
+    const secondList = list[1]
+    return await this.getResult(secondList.date)
+  }
+
+  public async getList (page: number = 1): Promise<Array<{
+    id: string
+    url: string
+    date: Date
+  }>> {
+    const $ = load(
+      await fetch(`https://news.sanook.com/lotto/archive/page/${page}`).then(async res =>
+        await res.text()
+      )
+    )
+
+    const res = $(
+      'div.box-cell.box-cell--lotto.content > div > div > div > article.archive--lotto'
+    )
+      .map((_, element) => {
+        const linkElement = $('div > div > a', element)
+        const id = linkElement.attr('href')?.split('/')[5]
+        const yearString = id?.slice(4, 8) ?? '0'
+        const year = parseInt(yearString) - 543
+        const date = new Date(`${year}-${id?.slice(2, 4)}-${id?.slice(0, 2)}`)
+        return {
+          id: id ?? '',
+          url: `https://news.sanook.com/lotto/check/${id}`,
+          date
+        }
+      })
+      .toArray()
+
+    return res
   }
 }
