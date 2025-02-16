@@ -1,6 +1,7 @@
 {
   "name": "thai-lotto",
-  "version": "0.0.1",
+  "description": "Thai lottery result",
+  "version": "0.0.2",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -10,8 +11,14 @@
     "lint:fix": "eslint . --ext .ts --fix"
   },
   "author": "necessarylion",
-  "license": "MIT",
-  "description": "Thai lottery result",
+  "license": "ISC",
+  "keywords": [
+    "thai lotto",
+    "thai lottery",
+    "lottery",
+    "thai",
+    "thai government lottery"
+  ],
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.1",
