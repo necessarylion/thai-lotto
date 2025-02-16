@@ -70,7 +70,7 @@ export class ThaiLotto {
           price: '200000.00',
           numbers: prizeSecond
         },
-        thrid: {
+        third: {
           price: '80000.00',
           numbers: prizeThird
         },

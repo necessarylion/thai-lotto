@@ -10,7 +10,7 @@ export interface ThaiLottoResult {
       price: string
       numbers: string[]
     }
-    thrid: {
+    third: {
       price: string
       numbers: string[]
     }
