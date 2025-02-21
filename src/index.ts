@@ -5,7 +5,7 @@ const scrapeText = (api: CheerioAPI) => (selector: string) =>
   api(selector).map((_, element) => api(element).text()).toArray()
 
 export class ThaiLotto {
-  public async getResult (date: Date): Promise<ThaiLottoResult|undefined> {
+  public async getResult (date: Date): Promise<ThaiLottoResult | undefined> {
     const day = String(date.getDate()).padStart(2, '0')
     const month = String(date.getMonth() + 1).padStart(2, '0')
     const year = String(date.getFullYear() + 543)
@@ -102,7 +102,7 @@ export class ThaiLotto {
     }
   }
 
-  public async getLatest(): Promise<ThaiLottoResult | undefined> {
+  public async getLatest (): Promise<ThaiLottoResult | undefined> {
     const list = await this.getList()
     const firstList = list[0]
     const res1 = await this.getResult(firstList.date)
