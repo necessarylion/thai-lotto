@@ -1,7 +1,7 @@
 {
   "name": "thai-lotto",
   "description": "Thai lottery result",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -11,6 +11,10 @@
     "lint:fix": "eslint . --ext .ts --fix"
   },
   "author": "necessarylion",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/necessarylion/thai-lotto.git"
+  },
   "license": "ISC",
   "keywords": [
     "thai lotto",
