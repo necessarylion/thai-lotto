@@ -20,6 +20,5 @@ describe('ThaiLotto', () => {
     const res = await thaiLotto.getLatest()
     expect(res?.data).toBeDefined()
     expect(res?.date).toBeDefined()
-    console.log(res?.data)
   })
 })
