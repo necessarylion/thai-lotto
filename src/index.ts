@@ -71,7 +71,7 @@ export class ThaiLotto {
 
     return {
       date,
-      endpoint: url,
+      endpoint: `https://news.sanook.com/lotto/check/${targetId}`,
       data: {
         first: {
           price: '6000000.00',
