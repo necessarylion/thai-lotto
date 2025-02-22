@@ -1,4 +1,4 @@
-# Thai Lott Result
+# Thai Lott Result (work on both browser and node.js)
 
 ```ts
 import { ThaiLotto } from 'thai-lotto'
