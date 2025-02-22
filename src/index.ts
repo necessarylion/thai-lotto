@@ -1,6 +1,17 @@
 import { type CheerioAPI, load } from 'cheerio'
 import { type ThaiLottoResult } from './interface'
 
+const urls = {
+  list: 'aHR0cHM6Ly9hcGkuYWxsb3JpZ2lucy53aW4vcmF3P3VybD1odHRwczovL25ld3Muc2Fub29rLmNvbS9sb3R0by9hcmNoaXZlL3BhZ2Uv',
+  check: 'aHR0cHM6Ly9hcGkuYWxsb3JpZ2lucy53aW4vcmF3P3VybD1odHRwczovL25ld3Muc2Fub29rLmNvbS9sb3R0by9jaGVjay8='
+}
+
+function getUrl (type: keyof typeof urls): string {
+  const encodedUrl = urls[type]
+  const decodedUrl = atob(encodedUrl)
+  return decodedUrl
+}
+
 const scrapeText = (api: CheerioAPI) => (selector: string) =>
   api(selector).map((_, element) => api(element).text()).toArray()
 
@@ -10,7 +21,7 @@ export class ThaiLotto {
     const month = String(date.getMonth() + 1).padStart(2, '0')
     const year = String(date.getFullYear() + 543)
     const targetId = `${day}${month}${year}`
-    const url = `https://news.sanook.com/lotto/check/${targetId}`
+    const url = `${getUrl('check')}${targetId}`
 
     const html = load(await fetch(url).then(async res => await res.text()))
     const scraper = scrapeText(html)
@@ -117,27 +128,31 @@ export class ThaiLotto {
     date: Date
   }>> {
     const $ = load(
-      await fetch(`https://news.sanook.com/lotto/archive/page/${page}`).then(async res =>
+      await fetch(`${getUrl('list')}${page}`).then(async res =>
         await res.text()
       )
     )
-
     const res = $(
       'div.box-cell.box-cell--lotto.content > div > div > div > article.archive--lotto'
-    )
-      .map((_, element) => {
-        const linkElement = $('div > div > a', element)
-        const id = linkElement.attr('href')?.split('/')[5]
-        const yearString = id?.slice(4, 8) ?? '0'
-        const year = parseInt(yearString) - 543
-        const date = new Date(`${year}-${id?.slice(2, 4)}-${id?.slice(0, 2)}`)
-        return {
-          id: id ?? '',
-          url: `https://news.sanook.com/lotto/check/${id}`,
-          date
-        }
-      })
+    ).map((_, element) => {
+      const linkElement = $('div > div > a', element)
+      const id = linkElement.attr('href')?.split('/')[5]
+      const yearString = id?.slice(4, 8) ?? '0'
+      const year = parseInt(yearString) - 543
+      const date = new Date(`${year}-${id?.slice(2, 4)}-${id?.slice(0, 2)}`)
+      return {
+        id: id ?? '',
+        url: `https://news.sanook.com/lotto/check/${id}`,
+        date
+      }
+    })
       .toArray()
+      .filter(item => {
+        // remove the item which date is greater than today (comparing dates only)
+        const today = new Date()
+        const todayDate = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()))
+        return item.date.getTime() <= todayDate.getTime()
+      })
 
     return res
   }
